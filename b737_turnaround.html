@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aircraft Turnaround Time Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Ensure the content fills the entire viewport height */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%; /* Reduce the table width */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px; /* Reduce the padding */
+            text-align: center;
+            font-size: 14px; /* Reduce the font size */
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="text"] {
+            width: 100px;
+        }
+
+        #calculate-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Aircraft Turnaround Time Tracker B737</h1>
+    <label for="arrival-time">Actual Time of Arrival (HH:MM):</label>
+    <input type="text" id="arrival-time" placeholder="HH:MM" required><br>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Connecting Bridge & Door</td>
+                <td id="start1">-</td>
+                <td id="end1">-</td>
+            </tr>
+            <tr>
+                <td>Guest Disembarkation</td>
+                <td id="start2">-</td>
+                <td id="end2">-</td>
+            </tr>
+            <tr>
+                <td>Unloading Baggage & Cargo</td>
+                <td id="start3">-</td>
+                <td id="end3">-</td>
+            </tr>
+            <tr>
+                <td>Cleaning</td>
+                <td id="start4">-</td>
+                <td id="end4">-</td>
+            </tr>
+            <tr>
+                <td>Catering</td>
+                <td id="start5">-</td>
+                <td id="end5">-</td>
+            </tr>
+            <tr>
+                <td>Guest Boarding</td>
+                <td id="start6">-</td>
+                <td id="end6">-</td>
+            </tr>
+            <tr>
+                <td>Cargo & Baggage Loading</td>
+                <td id="start7">-</td>
+                <td id="end7">-</td>
+            </tr>
+            <tr>
+                <td>Door Close</td>
+                <td id="start8">-</td>
+                <td id="end8">-</td>
+            </tr>
+            <tr>
+                <td>Engine Start</td>
+                <td id="start9">-</td>
+                <td id="end9">-</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button id="calculate-btn">Calculate</button>
+    <div id="result"></div>
+
+    <footer>
+        Created By Faisal AlBulushi
+    </footer>
+
+    <script>
+        document.getElementById("calculate-btn").addEventListener("click", calculateTimings);
+
+        function calculateTimings() {
+            const arrivalTimeInput = document.getElementById("arrival-time").value;
+            const arrivalTime = arrivalTimeInput.split(":");
+            
+            if (arrivalTime.length !== 2) {
+                alert("Please enter a valid Arrival Time in HH:MM format.");
+                return;
+            }
+
+            const hours = parseInt(arrivalTime[0], 10);
+            const minutes = parseInt(arrivalTime[1], 10);
+
+            if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+                alert("Please enter a valid Arrival Time in HH:MM format.");
+                return;
+            }
+
+            const tasks = [
+                { name: "Connecting Bridge & Door", start: 0, end: 4 },
+                { name: "Guest Disembarkation", start: 5, end: 12 },
+                { name: "Unloading Baggage & Cargo", start: 5, end: 24 },
+                { name: "Cleaning", start: 13, end: 27 },
+                { name: "Catering", start: 13, end: 27 },
+                { name: "Guest Boarding", start: 28, end: 44 },
+                { name: "Cargo & Baggage Loading", start: 25, end: 44 },
+                { name: "Door Close", start: 45, end: 46 },
+                { name: "Engine Start", start: 47, end: 50 },
+            ];
+
+            const table = document.querySelector("table tbody");
+
+            const arrivalTimeInMinutes = hours * 60 + minutes;
+
+            tasks.forEach((task, index) => {
+                const startTimeInMinutes = arrivalTimeInMinutes + task.start;
+                const endTimeInMinutes = arrivalTimeInMinutes + task.end;
+
+                const startTime = `${Math.floor(startTimeInMinutes / 60).toString().padStart(2, '0')}:${(startTimeInMinutes % 60).toString().padStart(2, '0')}`;
+                const endTime = `${Math.floor(endTimeInMinutes / 60).toString().padStart(2, '0')}:${(endTimeInMinutes % 60).toString().padStart(2, '0')}`;
+
+                table.rows[index].cells[1].textContent = startTime;
+                table.rows[index].cells[2].textContent = endTime;
+            });
+
+            document.getElementById("result").textContent = "Timings calculated successfully.";
+        }
+    </script>
+</body>
+</html>
